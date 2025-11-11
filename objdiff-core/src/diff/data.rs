@@ -386,24 +386,22 @@ pub fn diff_data_symbol(
     let left_section = &left_obj.sections[left_section_idx];
     let right_section = &right_obj.sections[right_section_idx];
 
-    let left_start = left_symbol
-        .address
-        .checked_sub(left_section.address)
-        .ok_or_else(|| anyhow!(
+    let left_start = left_symbol.address.checked_sub(left_section.address).ok_or_else(|| 
+        anyhow!(
             "Symbol '{}' address out of section bounds (symbol addr: {:#x}, section addr: {:#x})",
             left_symbol.name,
             left_symbol.address,
             left_section.address
-        ))?;
-    let right_start = right_symbol
-        .address
-        .checked_sub(right_section.address)
-        .ok_or_else(|| anyhow!(
+        )
+    )?;
+    let right_start = right_symbol.address.checked_sub(right_section.address).ok_or_else(|| 
+            anyhow!(
             "Symbol '{}' address out of section bounds (symbol addr: {:#x}, section addr: {:#x})",
             right_symbol.name,
             right_symbol.address,
             right_section.address
-        ))?;
+        )
+    )?;
     
     let left_end = left_start + left_symbol.size;
     if left_end > left_section.size {
