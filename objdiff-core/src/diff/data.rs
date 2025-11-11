@@ -321,7 +321,12 @@ pub fn no_diff_data_symbol(obj: &Object, symbol_index: usize) -> Result<SymbolDi
     let start = symbol
         .address
         .checked_sub(section.address)
-        .ok_or_else(|| anyhow!("Symbol address out of section bounds"))?;
+        .ok_or_else(|| anyhow!(
+            "Symbol '{}' address out of section bounds (symbol addr: {:#x}, section addr: {:#x})",
+            symbol.name,
+            symbol.address,
+            section.address
+        ))?;
     let end = start + symbol.size;
     if end > section.size {
         return Err(anyhow!(
@@ -373,11 +378,24 @@ pub fn diff_data_symbol(
     let left_symbol = &left_obj.symbols[left_symbol_idx];
     let right_symbol = &right_obj.symbols[right_symbol_idx];
 
-    let left_section_idx =
-        left_symbol.section.ok_or_else(|| anyhow!("Data symbol section not found"))?;
-    let right_section_idx =
-        right_symbol.section.ok_or_else(|| anyhow!("Data symbol section not found"))?;
-
+    let left_start = left_symbol
+        .address
+        .checked_sub(left_section.address)
+        .ok_or_else(|| anyhow!(
+            "Symbol '{}' address out of section bounds (symbol addr: {:#x}, section addr: {:#x})",
+            left_symbol.name,
+            left_symbol.address,
+            left_section.address
+        ))?;
+    let right_start = right_symbol
+        .address
+        .checked_sub(right_section.address)
+        .ok_or_else(|| anyhow!(
+            "Symbol '{}' address out of section bounds (symbol addr: {:#x}, section addr: {:#x})",
+            right_symbol.name,
+            right_symbol.address,
+            right_section.address
+        ))?;
     let left_section = &left_obj.sections[left_section_idx];
     let right_section = &right_obj.sections[right_section_idx];
 
